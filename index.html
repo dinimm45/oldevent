@@ -30,7 +30,7 @@
                 style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
                 <h4 style="color: white;">Skann Qr kode for invitasjon</h4>
 
-                <canvas style="height: 30%;width:100% ;" hidden="" id="qr-canvas"></canvas>
+                <canvas style="height: 40%;width:100% ;" hidden="" id="qr-canvas"></canvas>
 
                 <div id="qr-result" hidden="">
                     <b>Data:</b> <span id="outputData"></span>
@@ -169,7 +169,7 @@
             function tick() {
                 canvasElement.height = video.videoHeight;
                 canvasElement.width = video.videoWidth;
-                canvas.drawImage(video, 1, 1, canvasElement.width, canvasElement.height);
+                canvas.drawImage(video, 2, 2, canvasElement.width, canvasElement.height);
 
                 scanning && requestAnimationFrame(tick);
             }
