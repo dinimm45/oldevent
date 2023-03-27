@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>inviteqr</title>
+    <script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.22.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+    <link rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet';this.onload=null"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet';this.onload=null"
+        href="https://unpkg.com/normalize.css@8.0.0/normalize.css">
+    <link rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet';this.onload=null"
+        href="https://unpkg.com/milligram@1.3.0/dist/milligram.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="author" content="ZXing for JS">
+</head>
+
+<body class="body" style="background-color:whitesmoke;background-color: #ffc0cb; /* light pink */
+  background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.example.com&color=000000&bgcolor=ffc0cb');
+  background-repeat: repeat;
+  background-attachment: fixed;">
+
+    <main class="wrapper" style="padding-top:2em">
+        <section class="container" id="demo-content">
+
+            <div id="container"
+                style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
+                <h4 style="color: white;">Skann Qr kode for invitasjon</h4>
+
+                <canvas style="height: 300px;width:400px ;" hidden="" id="qr-canvas"></canvas>
+
+                <div id="qr-result" hidden="">
+                    <b>Data:</b> <span id="outputData"></span>
+                </div>
+
+                <div class="scan-code" style="position: absolute; top:50%">
+                    <span class="scan-code__angle scan-code__angle--top"></span>
+                    <span class="scan-code__angle scan-code__angle--bottom"></span>
+                </div>
+            </div>
+            </div>
+            <div style="position: relative;bottom: 15%; margin-top: 35px;">
+
+            </div>
+            <ul id="myList">
+            </ul>
+    </main>
+
+
+
+    <script type="module">
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-e_171y9kifCgevAMRElGKnHghxzdM7A",
+            authDomain: "eventsdb-b6aaf.firebaseapp.com",
+            projectId: "eventsdb-b6aaf",
+            storageBucket: "eventsdb-b6aaf.appspot.com",
+            messagingSenderId: "995789907234",
+            appId: "1:995789907234:web:54edcc689b1c894594717b",
+            measurementId: "G-J0DC7YW8J4"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        import {
+            getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc, deleteField,arrayRemove
+        }
+            from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"
+
+
+        const db = getFirestore()
+
+        const qrcode = window.qrcode;
+
+        const video = document.createElement("video");
+        const canvasElement = document.getElementById("qr-canvas");
+        const canvas = canvasElement.getContext("2d");
+
+        const qrResult = document.getElementById("qr-result");
+        const outputData = document.getElementById("outputData");
+        let valid_db = getDoc(doc(db, 'qr-invite/invit1')).then(docSnap => {
+            if (docSnap.exists()) {
+                // console.log('Document data: ', docSnap.data()['code'])
+
+            }
+
+            let scanning = false;
+
+            qrcode.callback = res => {
+                console.log(docSnap.data()['code'])
+                const barcodesData = docSnap.data()['code'];
+                console.log((barcodesData.includes(res)));
+                if ((barcodesData.includes(res))) {
+                    outputData.innerText = res;
+                    alert('invitation is valid')
+
+                    // Deleting Value From a Doc Using arrayRemove Function From Firestore:-
+                    const deleteInvitationCode = async ()=>{
+                        try {
+                            const docRef = doc(db,'qr-invite','invit1');
+                            const obj = {};
+                            obj["code"]= arrayRemove(res);
+                            await updateDoc(docRef,obj); 
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+
+                    deleteInvitationCode();
+
+                    // console.log(barcodesData.indexOf("wlcm1"))
+
+                    // barcodesData.splice(barcodesData.indexOf("wlcm1"), 1)
+
+                    // console.log(barcodesData.splice(barcodesData.indexOf("wlcm1"), 1))
+
+                    // updateDoc(barcodesData.splice(barcodesData.indexOf("wlcm1"), 1))
+                    // //lister opp arrayen
+                    // for (let i = 0; i < docSnap.data()['code'].length; i++) {
+                    //     if (barcodesData == "wlcm1") {
+                    //         deleteDoc(docSnap.data()['code'][i])
+
+                    //     }
+                    // }
+                    // const collectionRef = (doc(db, 'qr-invite'));
+                    // const documentRef = collectionRef.doc("invite2");
+                    // console.log(documentRef)
+                    // doc(db, 'qr-invite/invite2').where("code" == "wlcm1").get()
+                    //     .then((querySnapshot) => {
+                    //         querySnapshot.forEach((doc) => {
+                    //             doc.ref.delete();
+                    //             console.log("Array element removed successfully.");
+                    //         });
+                    //     })
+                    //     .catch((error) => {
+                    //         console.error("Error removing array element:", error);
+                    //     });
+
+
+
+                    qrResult.hidden = false;
+                    canvasElement.hidden = false;
+                } else {
+                    alert('Invitation not valid')
+                }
+            };
+
+
+            navigator.mediaDevices
+                .getUserMedia({ video: { facingMode: "environment" } })
+                .then(function (stream) {
+                    scanning = true;
+                    qrResult.hidden = true;
+
+                    canvasElement.hidden = false;
+                    video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+                    video.srcObject = stream;
+                    video.play();
+                    tick();
+                    scan();
+                });
+
+
+            function tick() {
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+                scanning && requestAnimationFrame(tick);
+            }
+
+            function scan() {
+                try {
+                    qrcode.decode();
+                } catch (e) {
+                    setTimeout(scan, 100);
+                }
+            }
+        });
+
+
+    </script>
+
+
+
+    <style>
+        .box {
+            float: left;
+            height: 20px;
+            width: 20px;
+            margin-bottom: 15px;
+            border: 1px solid black;
+            clear: both;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+        .video {
+            margin-top: 20px;
+            position: relative;
+            top: 140px;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+            left: 50%;
+
+        }
+
+        /*scanner animation*/
+        .scan-code {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 210px;
+            height: 180px;
+            z-index: 1;
+            left: 50%;
+            top: 50%
+        }
+
+        .scan-code__angle:before,
+        .scan-code__angle:after {
+            content: "";
+            position: absolute;
+
+            width: 30px;
+            height: 30px;
+            border-style: solid;
+            border-color: #52b459;
+            border-width: 0px;
+            z-index: 1;
+
+        }
+
+        .scan-code__angle:before {
+            border-left-width: 6px;
+            left: 0;
+
+        }
+
+        .scan-code__angle:after {
+            border-right-width: 6px;
+            right: 0;
+
+
+        }
+
+        .scan-code__angle--top:before,
+        .scan-code__angle--top:after {
+            top: 0;
+            border-top-width: 6px;
+
+
+        }
+
+        .scan-code__angle--bottom:before,
+        .scan-code__angle--bottom:after {
+            bottom: 0;
+            border-bottom-width: 6px;
+        }
+
+        .scan-code__angle--top:before {
+            border-top-left-radius: 4px;
+        }
+
+        .scan-code__angle--top:after {
+            border-top-right-radius: 4px;
+        }
+
+        .scan-code__angle--bottom:before {
+            border-bottom-left-radius: 4px;
+        }
+
+        .scan-code__angle--bottom:after {
+            border-bottom-right-radius: 4px;
+        }
+
+        ul {
+            color: black;
+        }
+
+        h2 {
+            color: black;
+        }
+
+        h1 {
+            color: black;
+        }
+
+        h4 {
+            color: black;
+        }
+    </style>
+    <!--The library in the button has to stay upgraded to work-->
+    <script type="text/javascript" src="https://unpkg.com/@zxing/library@dev"></script>
+</body>
+
+</html>

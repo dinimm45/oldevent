@@ -1,0 +1,6 @@
+.body {
+  background-image: url("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.example.com");
+  background-repeat: repeat;
+  background-color: #0d0d0d;
+  background-attachment: fixed;
+}
