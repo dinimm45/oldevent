@@ -27,23 +27,22 @@
         <section class="container" id="demo-content">
 
             <div id="container"
-                style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
+                style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; height: 70vh;">
                 <h4 style="color: white;">Skann Qr kode for invitasjon</h4>
 
-                <canvas style="height: 40%;width:100% ;" hidden="" id="qr-canvas"></canvas>
+                <canvas style="height: 40%;width:60% ;" hidden="" id="qr-canvas">
+                    <video id="video" autoplay playsInline muted></video>
+                </canvas>
 
                 <div id="qr-result" hidden="">
                     <b>Data:</b> <span id="outputData"></span>
                 </div>
 
-                <div class="scan-code" style="position: absolute; top:50%">
+                <div class="scan-code" style="position: absolute; top:55%">
                     <span class="scan-code__angle scan-code__angle--top"></span>
                     <span class="scan-code__angle scan-code__angle--bottom"></span>
                 </div>
             </div>
-            </div>
-            <div style="position: relative;bottom: 15%; margin-top: 35px;">
-
             </div>
             <ul id="myList">
             </ul>
@@ -77,9 +76,10 @@
 
         const qrcode = window.qrcode;
 
-        const video = document.createElement("video");
+        const video = document.getElementById("video");
         const canvasElement = document.getElementById("qr-canvas");
         const canvas = canvasElement.getContext("2d");
+
 
         const qrResult = document.getElementById("qr-result");
         const outputData = document.getElementById("outputData");
@@ -191,8 +191,8 @@
     <style>
         .box {
             float: left;
-            height: 20px;
-            width: 20px;
+            height: 10px;
+            width: 10px;
             margin-bottom: 15px;
             border: 1px solid black;
             clear: both;
@@ -211,7 +211,7 @@
         }
 
         .video {
-           position: fixed;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -245,13 +245,13 @@
         }
 
         .scan-code__angle:before {
-            border-left-width: 6px;
+            border-left-width: 4px;
             left: 0;
 
         }
 
         .scan-code__angle:after {
-            border-right-width: 6px;
+            border-right-width: 4px;
             right: 0;
 
 
@@ -260,7 +260,7 @@
         .scan-code__angle--top:before,
         .scan-code__angle--top:after {
             top: 0;
-            border-top-width: 6px;
+            border-top-width: 4px;
 
 
         }
@@ -268,23 +268,23 @@
         .scan-code__angle--bottom:before,
         .scan-code__angle--bottom:after {
             bottom: 0;
-            border-bottom-width: 6px;
+            border-bottom-width: 3px;
         }
 
         .scan-code__angle--top:before {
-            border-top-left-radius: 4px;
+            border-top-left-radius: 3px;
         }
 
         .scan-code__angle--top:after {
-            border-top-right-radius: 4px;
+            border-top-right-radius: 3px;
         }
 
         .scan-code__angle--bottom:before {
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 3px;
         }
 
         .scan-code__angle--bottom:after {
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 3px;
         }
 
         ul {
@@ -304,8 +304,7 @@
         }
     </style>
     <!--The library in the button has to stay upgraded to work-->
-   <!-- loading ZXingBrowser via UNPKG -->
-<script type="text/javascript" src="https://unpkg.com/@zxing/browser@latest"></script>
+    <script type="text/javascript" src="https://unpkg.com/@zxing/library@dev"></script>
 </body>
 
 </html>
