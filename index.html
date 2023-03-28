@@ -97,9 +97,8 @@
                 console.log((barcodesData.includes(res)));
                 if ((barcodesData.includes(res))) {
                     outputData.innerText = res;
-                    setTimeout(location.reload(), 2000)
-
-
+                    alert('invitation is valid')
+                    setTimeout(() => location.reload(), 3000)
 
                     // Deleting Value From a Doc Using arrayRemove Function From Firestore:-
                     const deleteInvitationCode = async () => {
@@ -149,6 +148,7 @@
                     canvasElement.hidden = false;
                 } else {
                     alert(' Not valid!')
+                    location.reload()
                 }
             };
 
