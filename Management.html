@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Event Ticket Management</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        body {
+            background-color: #F5F7F9;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            position: absolute;
+            top: 2%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #2C3E50;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(44, 62, 80, 0.2);
+        }
+
+        .card {
+            position: relative;
+            background: #E67E22;
+            border-radius: 10px;
+            width: 300px;
+            height: 400px;
+            margin: 10px;
+            box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 20px 30px -10px rgba(0, 0, 0, 0.4);
+        }
+
+        .card img {
+            width: 50%;
+            height: 50%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .card h3 {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Event Ticket Management</h1>
+    <div class="card" id="showTickets">
+        <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+            alt="View Tickets">
+        <h3>Show Already Made Tickets</h3>
+    </div>
+    <div class="card" id="createTickets">
+        <img src="your_create_ticket_image_url" alt="Create Tickets">
+        <h3>Create Digital Tickets</h3>
+    </div>
+    <script>
+        document.getElementById('showTickets').addEventListener('click', function () {
+            window.location.href = "DisplayInvitations.html";
+        });
+
+        document.getElementById('createTickets').addEventListener('click', function () {
+            window.location.href = "card.html";
+        });
+    </script>
+</body>
+
+</html>

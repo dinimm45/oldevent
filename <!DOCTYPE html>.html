@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Invitation Cards</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .card {
+            margin: 20px 0;
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <div id="app">
+        <h1 class="text-center my-4">Choose Your Invitation Cards</h1>
+        <div class="row">
+            <div class="col-md-4" v-for="option in options">
+                <div class="card">
+                    <img class="card-img-top" src="https://via.placeholder.com/350" alt="Card image">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">{{ option.count }} Invitations</h4>
+                        <p class="card-text">Only for {{ option.price }} kr</p>
+                        <button class="btn btn-primary" @click="purchase(option)">Purchase</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-center my-4">Need more than our options? <a href="mailto:contact@company.com">Contact us</a>.</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                options: [
+                    { count: 250, price: 339 },
+                    { count: 300, price: 599 },
+                    { count: 400, price: 899 },
+                ]
+            },
+            methods: {
+                purchase: function (option) {
+                    alert(`You have selected ${option.count} cards for ${option.price} kr.`);
+                    // Here you can implement the function to proceed to checkout.
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

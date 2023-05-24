@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Display Your Invitation Cards</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap library -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            max-width: 960px;
+            flex-grow: 1;
+            /* Allow container to grow and fill remaining space */
+            margin-bottom: 80px;
+            /* Adjust margin to accommodate footer */
+        }
+
+        h1 {
+            color: var(--primary-color);
+        }
+
+        :root {
+            --primary-color: #E74E35;
+            /* update color to provided theme */
+            --danger-color: #dc3545;
+        }
+
+        .inputs-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .inputs-container input:focus {
+            border-color: #e74e35;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            margin-left: 2px;
+        }
+
+        .btn-primary:hover {
+            background-color: #E74E35;
+            opacity: 0.8;
+            color: #333;
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        #errorMessage {
+            color: red;
+            display: none;
+        }
+
+        #qrCodeImage {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* added class for input */
+        .qr-input {
+            border: 1px solid var(--primary-color);
+        }
+
+
+        .card {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            height: 600px;
+            overflow: hidden;
+            border: 1px solid var(--primary-color);
+            /* update border to theme color */
+        }
+
+        /* Your styles here */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .navbar-brand img {
+            height: 50px;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #333;
+            font-size: 16px;
+            padding: 10px 15px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover,
+        .navbar-nav .nav-item .nav-link.active {
+            color: #e74e35;
+        }
+
+        .footer {
+            width: 100%;
+            background-color: #e74e35;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+            bottom: 0;
+            /* Position at the bottom */
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="logo.png" alt="Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="mb-4 text-center">Present your invitation</h1>
+                <div class="input-group mb-3">
+                    <!-- added qr-input class to the input -->
+                    <input type="text" id="qrCode" class="form-control qr-input" placeholder="Enter invitation Code">
+                    <button class="btn btn-primary" onclick="showQRCode()">Show QR Code</button>
+
+                    <div class="text-center"> <!-- Added a class to center the ad -->
+                        <!-- START ADVERTISER: Scandic NO from awin.com -->
+                        <div id="ads" style="max-width: 500px; margin: 20px;">
+                            <!-- Adjusted max-width and centered the ad -->
+                            <a rel="sponsored"
+                                href="https://www.awin1.com/cread.php?s=3057684&v=21887&q=429842&r=1019293">
+                                <img src="https://www.awin1.com/cshow.php?s=3057684&v=21887&q=429842&r=1019293"
+                                    border="0" style="max-width: 100%;">
+                            </a>
+                        </div>
+                        <!-- END ADVERTISER: Scandic NO from awin.com -->
+                    </div>
+
+                </div>
+                <div id="qrCodeContainer" style="display:none;">
+                    <div id="qrCodeCard" class="card">
+                        <img id="cardImage" class="card-img-top" alt="Card Image">
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="qrCodeImage" class="mb-3"></div>
+                        <p class="card-text" id="qrCodeText"></p>
+                    </div>
+                    <h3 id="errorMessage" class="text-danger text-center mt-4" style="display: none;">Invalid QR
+                        code
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <p>© 2023 Your Company Name. All Rights Reserved</p>
+        </div>
+    </footer>
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.22.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-e_171y9kifCgevAMRElGKnHghxzdM7A",
+            authDomain: "eventsdb-b6aaf.firebaseapp.com",
+            projectId: "eventsdb-b6aaf",
+            storageBucket: "eventsdb-b6aaf.appspot.com",
+            messagingSenderId: "995789907234",
+            appId: "1:995789907234:web:54edcc689b1c894594717b",
+            measurementId: "G-J0DC7YW8J4"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function showQRCode() {
+            const qrCodeInput = document.getElementById("qrCode");
+            const qrCodeText = qrCodeInput.value.trim();
+            const qrCodeContainer = document.getElementById("qrCodeContainer");
+            const qrCodeCard = document.getElementById("qrCodeCard");
+            const cardImage = document.getElementById("cardImage");
+            const qrCodeImage = document.getElementById("qrCodeImage");
+            const qrCodeTextElement = document.getElementById("qrCodeText");
+            const advertisement = document.getElementById('ads');
+
+            advertisement.style.display = 'none';
+            db.collection("codes")
+                .where("code", "==", qrCodeText)
+                .get()
+                .then((querySnapshot) => {
+                    qrCodeContainer.style.display = "block";
+                    if (querySnapshot.empty) {
+                        // No matching code found
+                        qrCodeCard.style.display = "none";
+                        document.getElementById("errorMessage").style.display = "block";
+                    } else {
+                        const doc = querySnapshot.docs[0];
+                        const codeData = doc.data();
+                        const imageUrl = codeData.image; // <-- This is the Firebase Storage URL
+
+                        // Use the URL directly
+                        cardImage.src = imageUrl;
+
+                        // Generate QR code
+                        const qrCode = new QRCode(document.createElement("div"), {
+                            text: qrCodeText,
+                            width: 58,
+                            height: 58,
+                        });
+
+                        // Clear previous QR code
+                        qrCodeImage.innerHTML = '';
+
+                        // Append the QR code to the qrCodeImage container
+                        qrCodeImage.appendChild(qrCode._el);
+
+                        qrCodeCard.style.display = "block";
+                        document.getElementById("errorMessage").style.display = "none";
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+        }
+    </script>
+</body>
+
+</html>

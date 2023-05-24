@@ -1,312 +1,235 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>inviteqr</title>
-    <script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.22.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
-    <link rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet';this.onload=null"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet';this.onload=null"
-        href="https://unpkg.com/normalize.css@8.0.0/normalize.css">
-    <link rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet';this.onload=null"
-        href="https://unpkg.com/milligram@1.3.0/dist/milligram.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="author" content="ZXing for JS">
-</head>
+    <title>Invitation Cards</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-<body class="body" style="background-color:whitesmoke;background-color: #ffc0cb; /* light pink */
-  background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.example.com&color=000000&bgcolor=ffc0cb');
-  background-repeat: repeat;
-  background-attachment: fixed;">
-
-    <main class="wrapper" style="padding-top:2em">
-        <section class="container" id="demo-content">
-
-            <div id="container"
-                style="position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; height: 70vh;">
-                <h4 style="color: white;">Skann Qr kode for invitasjon</h4>
-
-                <canvas style="height: 40%;width:60% ;" hidden="" id="qr-canvas">
-                    <video id="video" autoplay playsInline muted></video>
-                </canvas>
-
-                <div id="qr-result" hidden="">
-                    <b>Data:</b> <span id="outputData"></span>
-                </div>
-
-                <div class="scan-code" style="position: absolute; top:55%">
-                    <span class="scan-code__angle scan-code__angle--top"></span>
-                    <span class="scan-code__angle scan-code__angle--bottom"></span>
-                </div>
-            </div>
-            </div>
-            <ul id="myList">
-            </ul>
-    </main>
-
-
-
-    <script type="module">
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-e_171y9kifCgevAMRElGKnHghxzdM7A",
-            authDomain: "eventsdb-b6aaf.firebaseapp.com",
-            projectId: "eventsdb-b6aaf",
-            storageBucket: "eventsdb-b6aaf.appspot.com",
-            messagingSenderId: "995789907234",
-            appId: "1:995789907234:web:54edcc689b1c894594717b",
-            measurementId: "G-J0DC7YW8J4"
-        };
-
-        // Initialize Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        import {
-            getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc, deleteField, arrayRemove
-        }
-            from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"
-
-
-        const db = getFirestore()
-
-        const qrcode = window.qrcode;
-
-        const video = document.getElementById("video");
-        const canvasElement = document.getElementById("qr-canvas");
-        const canvas = canvasElement.getContext("2d");
-
-
-        const qrResult = document.getElementById("qr-result");
-        const outputData = document.getElementById("outputData");
-        let valid_db = getDoc(doc(db, 'qr-invite/invit1')).then(docSnap => {
-            if (docSnap.exists()) {
-                // console.log('Document data: ', docSnap.data()['code'])
-
-            }
-
-            let scanning = false;
-
-            qrcode.callback = res => {
-                console.log(docSnap.data()['code'])
-                const barcodesData = docSnap.data()['code'];
-                console.log((barcodesData.includes(res)));
-                if ((barcodesData.includes(res))) {
-                    outputData.innerText = res;
-                    alert('invitation is valid')
-                    setTimeout(() => location.reload(), 1000)
-
-                    // Deleting Value From a Doc Using arrayRemove Function From Firestore:-
-                    const deleteInvitationCode = async () => {
-                        try {
-                            const docRef = doc(db, 'qr-invite', 'invit1');
-                            const obj = {};
-                            obj["code"] = arrayRemove(res);
-                            await updateDoc(docRef, obj);
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    }
-
-                    deleteInvitationCode();
-
-                    // console.log(barcodesData.indexOf("wlcm1"))
-
-                    // barcodesData.splice(barcodesData.indexOf("wlcm1"), 1)
-
-                    // console.log(barcodesData.splice(barcodesData.indexOf("wlcm1"), 1))
-
-                    // updateDoc(barcodesData.splice(barcodesData.indexOf("wlcm1"), 1))
-                    // //lister opp arrayen
-                    // for (let i = 0; i < docSnap.data()['code'].length; i++) {
-                    //     if (barcodesData == "wlcm1") {
-                    //         deleteDoc(docSnap.data()['code'][i])
-
-                    //     }
-                    // }
-                    // const collectionRef = (doc(db, 'qr-invite'));
-                    // const documentRef = collectionRef.doc("invite2");
-                    // console.log(documentRef)
-                    // doc(db, 'qr-invite/invite2').where("code" == "wlcm1").get()
-                    //     .then((querySnapshot) => {
-                    //         querySnapshot.forEach((doc) => {
-                    //             doc.ref.delete();
-                    //             console.log("Array element removed successfully.");
-                    //         });
-                    //     })
-                    //     .catch((error) => {
-                    //         console.error("Error removing array element:", error);
-                    //     });
-
-
-
-                    qrResult.hidden = false;
-                    canvasElement.hidden = false;
-                } else {
-                    alert(' Not valid!')
-                    location.reload()
-                }
-            };
-
-
-            navigator.mediaDevices
-                .getUserMedia({ video: { facingMode: "environment" } })
-                .then(function (stream) {
-                    scanning = true;
-                    qrResult.hidden = true;
-
-                    canvasElement.hidden = false;
-                    video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-                    video.srcObject = stream;
-                    video.play();
-                    tick();
-                    scan();
-                });
-
-
-            function tick() {
-                canvasElement.height = video.videoHeight;
-                canvasElement.width = video.videoWidth;
-                canvas.drawImage(video, 2, 2, canvasElement.width, canvasElement.height);
-
-                scanning && requestAnimationFrame(tick);
-            }
-
-            function scan() {
-                try {
-                    qrcode.decode();
-                } catch (e) {
-                    setTimeout(scan, 100);
-                }
-            }
-        });
-
-
-    </script>
-
-
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap library -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
-        .box {
-            float: left;
-            height: 10px;
-            width: 10px;
-            margin-bottom: 15px;
-            border: 1px solid black;
-            clear: both;
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
         }
 
-        .red {
-            background-color: red;
-        }
-
-        .green {
-            background-color: green;
-        }
-
-        .blue {
-            background-color: blue;
-        }
-
-        .video {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .header {
             width: 100%;
-            height: 100%;
-
+            height: 400px;
+            background: linear-gradient(to bottom right, #FF512F, #F09819);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /*scanner animation*/
-        .scan-code {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            width: 210px;
-            height: 180px;
-            z-index: 1;
-            left: 50%;
-            top: 50%
+        .header h1 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 2s;
         }
 
-        .scan-code__angle:before,
-        .scan-code__angle:after {
-            content: "";
-            position: absolute;
-
-            width: 30px;
-            height: 30px;
-            border-style: solid;
-            border-color: #52b459;
-            border-width: 0px;
-            z-index: 1;
-
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .scan-code__angle:before {
-            border-left-width: 4px;
-            left: 0;
-
+        .navbar .navbar-brand img {
+            height: 50px;
         }
 
-        .scan-code__angle:after {
-            border-right-width: 4px;
-            right: 0;
-
-
+        .navbar-nav .nav-item .nav-link {
+            color: #333;
+            font-size: 16px;
+            padding: 10px 15px;
+            transition: color 0.3s ease;
         }
 
-        .scan-code__angle--top:before,
-        .scan-code__angle--top:after {
-            top: 0;
-            border-top-width: 4px;
-
-
+        .navbar-nav .nav-item .nav-link:hover,
+        .navbar-nav .nav-item .nav-link.active {
+            color: #E74E35;
         }
 
-        .scan-code__angle--bottom:before,
-        .scan-code__angle--bottom:after {
-            bottom: 0;
-            border-bottom-width: 3px;
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            margin-top: 20px;
         }
 
-        .scan-code__angle--top:before {
-            border-top-left-radius: 3px;
+        .title {
+            text-align: center;
+            color: #E74E35;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 40px;
         }
 
-        .scan-code__angle--top:after {
-            border-top-right-radius: 3px;
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        .scan-code__angle--bottom:before {
-            border-bottom-left-radius: 3px;
+        .card {
+            width: 300px;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+            overflow: hidden;
         }
 
-        .scan-code__angle--bottom:after {
-            border-bottom-right-radius: 3px;
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
         }
 
-        ul {
-            color: black;
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
         }
 
-        h2 {
-            color: black;
+        .card-body {
+            padding: 20px;
         }
 
-        h1 {
-            color: black;
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        h4 {
-            color: black;
+        .card-text {
+            font-size: 16px;
+            color: #555555;
+            margin-bottom: 20px;
+        }
+
+        .card-button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+            color: #FFFFFF;
+            background-color: #E74E35;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 2s;
+        }
+
+        .card-button:hover {
+            background-color: #D64545;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
-    <!--The library in the button has to stay upgraded to work-->
-    <script type="text/javascript" src="https://unpkg.com/@zxing/library@dev"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="logo.png" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1 style="color: #FFFFFF; font-size: 48px; text-align: center;">Invitation Cards</h1>
+    </div>
+
+    <div class="container">
+        <div class="card-wrapper">
+            <div class="card">
+                <img class="card-img-top" src="event.jpg" alt="Event Planner Invitation">
+                <div class="card-body">
+                    <h4 class="card-title">Event Planner</h4>
+                    <p class="card-text">Design and create custom invitations for your events.</p>
+                    <button class="card-button" onclick="selectOption('event-planner')">Select</button>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top" src="theguest.jpg" alt="Guest Invitation">
+                <div class="card-body">
+                    <h4 class="card-title">Guest</h4>
+                    <p class="card-text">Enter an invitation code to access your invitation.</p>
+                    <button class="card-button" onclick="selectOption('guest')">Select</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="width: 100%;
+            background-color: #e74e35;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin: 20px;">
+        <div>
+            <p>© 2023 Your Company Name. All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        function selectOption(option) {
+            if (option === 'event-planner') {
+                // Redirect to the event planner page
+                window.location.href = "Management.html";
+            } else if (option === 'guest') {
+                // Redirect to the guest invitation page
+                window.location.href = "guest.html";
+            }
+        }
+    </script>
 </body>
 
 </html>
