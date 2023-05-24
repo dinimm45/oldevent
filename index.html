@@ -99,7 +99,8 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         import {
-            getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc, deleteField, arrayRemove
+            getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc, deleteField, arrayRemove, query, where, getDocs
+
         }
             from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"
 
@@ -112,40 +113,41 @@
         const canvasElement = document.getElementById("qr-canvas");
         const canvas = canvasElement.getContext("2d");
 
-
         const qrResult = document.getElementById("qr-result");
         const outputData = document.getElementById("outputData");
-        let valid_db = getDoc(doc(db, 'qr-invite/invit1')).then(docSnap => {
-            if (docSnap.exists()) {
-                // console.log('Document data: ', docSnap.data()['code'])
 
-            }
-
+        // Get all documents from 'codes' collection
+        const allCodesSnapshot = getDocs(collection(db, 'codes')).then((querySnapshot) => {
             let scanning = false;
 
             qrcode.callback = res => {
-                console.log(docSnap.data()['code'])
-                const barcodesData = docSnap.data()['code'];
-                console.log((barcodesData.includes(res)));
-                if ((barcodesData.includes(res))) {
+                let codeExists = false;
+                let docID = '';
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().code === res) {
+                        codeExists = true;
+                        docID = doc.id;
+                    }
+                });
+
+                if (codeExists) {
                     outputData.innerText = res;
                     alert('invitation is valid')
                     setTimeout(() => location.reload(), 1000)
 
-                    // Deleting Value From a Doc Using arrayRemove Function From Firestore:-
+                    // Deleting the Document:
                     const deleteInvitationCode = async () => {
                         try {
-                            const docRef = doc(db, 'qr-invite', 'invit1');
-                            const obj = {};
-                            obj["code"] = arrayRemove(res);
-                            await updateDoc(docRef, obj);
+                            await deleteDoc(doc(db, 'codes', docID));
+
                         } catch (error) {
                             console.log(error);
                         }
                     }
 
-                    deleteInvitationCode();
 
+
+                    deleteInvitationCode();
 
                     qrResult.hidden = false;
                     canvasElement.hidden = false;
@@ -154,7 +156,6 @@
                     location.reload()
                 }
             };
-
 
             navigator.mediaDevices
                 .getUserMedia({ video: { facingMode: "environment" } })
@@ -169,7 +170,6 @@
                     tick();
                     scan();
                 });
-
 
             function tick() {
                 canvasElement.height = video.videoHeight;
@@ -187,6 +187,8 @@
                 }
             }
         });
+
+
 
 
     </script>
